@@ -18,6 +18,8 @@ from __future__ import absolute_import
 # exec(open("import_pkl.py").read())
 import sys
 sys.setrecursionlimit(100000)
+sys.path.append('../')
+
 import os
 from optparse import OptionParser
 import cPickle as pickle
@@ -34,15 +36,16 @@ from lasagne.layers import InputLayer, DenseLayer
 from lasagne.init import Orthogonal, Uniform, Normal
 
 # Local imports
-from ObservationModels import GaussianObsTSGM, PoissonObsTSGM
-from LatEvModels import LocallyLinearEvolution
+import vind
+from code.ObservationModels import GaussianObsTSGM, PoissonObsTSGM
+from code.LatEvModels import LocallyLinearEvolution
 
-from RecognitionModels import SmoothingNLDSTimeSeries
-from OptimizerVAEC_TS import VAEC_NLDSOptimizer
+from code.RecognitionModels import SmoothingNLDSTimeSeries
+from code.OptimizerVAEC_TS import VAEC_NLDSOptimizer
 
 # from MinibatchIterator import DatasetTrialIterator
 
-from datetools import addDateTime
+from code.datetools import addDateTime
 cur_date = addDateTime()
 
 #=== GLOBALS ===#
@@ -54,20 +57,20 @@ CLUSTER = 0
 EXTERNAL_DATA = 1
 
 ### DATA  PATHS, ETC ###
-LOCAL_DATA_ROOT = "/Users/danielhernandez/Work/time_series/vae_nlds_rec_algo_v2/data/"
+LOCAL_DATA_ROOT = "data/"
 THIS_DATA_DIR = "poisson_data_002" #  lorenzdata004
 IS_DICT = 1
 DATA_FILE = 'datadict'
 TEST_FILE = None
-LOCAL_RLT_ROOT = '/Users/danielhernandez/Work/time_series/vae_nlds_rec_algo_v2/rslts/'
+LOCAL_RLT_ROOT = 'rslts/'
 RLT_DIR = 'poisson002_fit'
 
-CLUSTER_DATA_ROOT = "/vega/stats/users/dh2832/general_libs/data/" 
+CLUSTER_DATA_ROOT = "./" 
 
 ### LOAD YUANJUN FIT
 LOADFIT = 0
 LOAD_FROM_YJ = 0
-YJFILE = '/Users/danielhernandez/Work/nlds/yj_newcode/flds/rlt/v1.0/data_fit_D170728_1450/xDim3_seed1_NNPLDS_SGVB.save'
+YJFILE = './'
 
 
 ### MODEL HYPERPARAMETERS  AND GRAPH DEFINITION ###
