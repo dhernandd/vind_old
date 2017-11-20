@@ -16,8 +16,13 @@
 import unittest
 
 import numpy as np
+import sys
+sys.path.append('../../')
 
-from LatEvModels import LocallyLinearEvolution
+import vind
+
+__package__ = 'vind.tests'
+from ..code.LatEvModels import LocallyLinearEvolution
 
 
 
