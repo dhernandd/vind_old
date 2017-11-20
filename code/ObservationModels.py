@@ -183,7 +183,7 @@ class GaussianObsTSGM(object):
             NNMuY = DenseLayer(NNMuY, 60, nonlinearity=softplus, W=Orthogonal(), 
                         num_leading_axes=2, name='MuY_HL')
             # Gaussian obs seem to work best if we hike the initial scale of W here
-            NNMuY.W.set_value(self.NNMuY_W*self.NNMuY.W.get_value())
+            NNMuY.W.set_value(self.NNMuY_W*NNMuY.W.get_value())
             self.NNMuY = DenseLayer(NNMuY, self.yDim, nonlinearity=linear, W=Orthogonal(), 
                                     num_leading_axes=2)  # store last layer as a property to be able to recover all others
         self.NNMuY.W.set_value(self.NNMuY_W*self.NNMuY.W.get_value())

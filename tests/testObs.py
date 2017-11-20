@@ -16,9 +16,14 @@
 import unittest
 
 import numpy as np
+import sys
+sys.path.append('../../')
 
-from LatEvModels import LocallyLinearEvolution
-from ObservationModels import PoissonObsTSGM, GaussianObsTSGM
+import vind
+
+__package__ = 'vind.tests'
+from ..code.LatEvModels import LocallyLinearEvolution
+from ..code.ObservationModels import PoissonObsTSGM, GaussianObsTSGM
 
 
 
@@ -100,17 +105,18 @@ class GaussianObsTest(unittest.TestCase):
 
 if __name__ == '__main__':
     suitePO = unittest.TestSuite()
-#     suitePO.addTest(PoissonObsTest("test_simple"))                          # OK!
-#     suitePO.addTest(PoissonObsTest("test_sample_XY"))                       # OK!
+    suitePO.addTest(PoissonObsTest("test_simple"))                          # OK!
+    suitePO.addTest(PoissonObsTest("test_sample_XY"))                       # OK!
     suitePO.addTest(PoissonObsTest("test_eval_LogDensity_Yterms"))          # OK!
     suitePO.addTest(PoissonObsTest("test_eval_LogDensity"))                 #  OK!
 
     suiteGO = unittest.TestSuite()
-#     suiteGO.addTest(GaussianObsTest("test_simple"))
-#     suiteGO.addTest(GaussianObsTest("test_sample_XY"))
-#     suiteGO.addTest(GaussianObsTest("test_eval_LogDensity_Yterms"))
+    suiteGO.addTest(GaussianObsTest("test_simple"))
+    suiteGO.addTest(GaussianObsTest("test_sample_XY"))
+    suiteGO.addTest(GaussianObsTest("test_eval_LogDensity_Yterms"))
     suiteGO.addTest(GaussianObsTest("test_eval_LogDensity"))
     
     
     runner = unittest.TextTestRunner()
+    runner.run(suitePO)
     runner.run(suiteGO)

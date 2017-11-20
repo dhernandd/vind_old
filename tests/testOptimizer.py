@@ -15,15 +15,22 @@
 # ==============================================================================
 import unittest
 import os
+import sys
+sys.path.append('../../')
+
 
 import numpy as np
 
-from LatEvModels import LocallyLinearEvolution
-from ObservationModels import PoissonObsTSGM
-from RecognitionModels import SmoothingNLDSTimeSeries
-from OptimizerVAEC_TS import Optimizer_TS, VAEC_NLDSOptimizer
+import vind
 
-from datetools import addDateTime
+__package__ = 'vind.tests'
+from ..code.LatEvModels import LocallyLinearEvolution
+from ..code.ObservationModels import PoissonObsTSGM
+from ..code.RecognitionModels import SmoothingNLDSTimeSeries
+from ..code.OptimizerVAEC_TS import Optimizer_TS, VAEC_NLDSOptimizer
+
+from ..code.datetools import addDateTime
+
 rslt_dir = '/Users/danielhernandez/Work/time_series/vae_nlds_rec_algo_v2/rslts/test_fit' + addDateTime() + '/'
 if not os.path.exists(rslt_dir):
     os.makedirs(rslt_dir)
@@ -106,17 +113,18 @@ class OptimizerTest(unittest.TestCase):
         mrec = self.opt1.get_RecModel()                
         print 'Ydata mean, Xdata mean:', Ydata.mean(), Xdata.mean()
         print 'Inferred X mean at epoch 0:', mrec.eval_Mu(Ydata).mean()
-        self.opt1.fit(Ytrain, y_valid=None, learning_rate=3e-3, max_epochs=150, costname='ELBO', rslt_dir=rslt_dir)
+        self.opt1.fit(Ytrain, y_valid=None, learning_rate=3e-3, 
+                      max_epochs=1, costname='ELBO', rslt_dir=rslt_dir)
 
 
 
 if __name__ == '__main__':
     suiteO = unittest.TestSuite()
-#     suiteO.addTest(OptimizerTest("test_simple"))                        # OK!
-#     suiteO.addTest(OptimizerTest("test_cost_LogDensity"))               # OK!
-#     suiteO.addTest(OptimizerTest("test_cost_ELBO"))                     # OK!
+    suiteO.addTest(OptimizerTest("test_simple"))                        # OK!
+    suiteO.addTest(OptimizerTest("test_cost_LogDensity"))               # OK!
+    suiteO.addTest(OptimizerTest("test_cost_ELBO"))                     # OK!
     suiteO.addTest(OptimizerTest("test_fit_ELBO_Poisson_wCA"))       # OK!
-#     suiteO.addTest(OptimizerTest("test_fit_ELBO_Poisson"))
+    suiteO.addTest(OptimizerTest("test_fit_ELBO_Poisson"))
     
     runner = unittest.TextTestRunner()
     

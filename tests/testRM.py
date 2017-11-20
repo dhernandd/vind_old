@@ -15,11 +15,17 @@
 # ==============================================================================
 import unittest
 
+import sys
+sys.path.append('../../')
+
 import numpy as np
 
-from LatEvModels import LocallyLinearEvolution
-from ObservationModels import PoissonObsTSGM
-from RecognitionModels import SmoothingNLDSTimeSeries
+import vind
+
+__package__ = 'vind.tests'
+from ..code.LatEvModels import LocallyLinearEvolution
+from ..code.ObservationModels import PoissonObsTSGM
+from ..code.RecognitionModels import SmoothingNLDSTimeSeries
 
 
 
@@ -61,6 +67,7 @@ class SmoothingDSTest(unittest.TestCase):
         print 'Entropy:', self.rm.eval_Entropy(self.Ydata3, self.Xdata3)
         
     def test_sample_noise(self):
+        print 'This may take a while....'
         noise_vals = self.rm.sample_noise(self.Ydata3, self.Xdata3)
         print 'Noise sample:', noise_vals[0] 
 
@@ -68,11 +75,11 @@ class SmoothingDSTest(unittest.TestCase):
 
 if __name__ == '__main__':
     suiteSmDS = unittest.TestSuite()
-#     suiteSmDS.addTest(SmoothingDSTest("test_simple"))                           # OK!
-#     suiteSmDS.addTest(SmoothingDSTest("test_eval_TheChol"))                     # OK!
-#     suiteSmDS.addTest(SmoothingDSTest("test_eval_postX"))                       # OK!
-#     suiteSmDS.addTest(SmoothingDSTest("test_sample_X"))                         # OK!
-#     suiteSmDS.addTest(SmoothingDSTest("test_compute_Entropy"))                  # OK!
+    suiteSmDS.addTest(SmoothingDSTest("test_simple"))                           # OK!
+    suiteSmDS.addTest(SmoothingDSTest("test_eval_TheChol"))                     # OK!
+    suiteSmDS.addTest(SmoothingDSTest("test_eval_postX"))                       # OK!
+    suiteSmDS.addTest(SmoothingDSTest("test_sample_X"))                         # OK!
+    suiteSmDS.addTest(SmoothingDSTest("test_compute_Entropy"))                  # OK!
     suiteSmDS.addTest(SmoothingDSTest("test_sample_noise"))
 
     runner = unittest.TextTestRunner()
