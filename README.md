@@ -1,5 +1,5 @@
 # VIND (Variational Inference for Nonlinear Dynamics)
-Variational Inference for Nonlinear Dynamics
+
 
 This code represents a reference implementation for the paper 
 
