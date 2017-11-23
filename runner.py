@@ -67,11 +67,6 @@ RLT_DIR = 'poisson002_fit'
 
 CLUSTER_DATA_ROOT = "./" 
 
-### LOAD YUANJUN FIT
-LOADFIT = 0
-LOAD_FROM_YJ = 0
-YJFILE = './'
-
 
 ### MODEL HYPERPARAMETERS  AND GRAPH DEFINITION ###
 OBSERVATIONS = 'Poisson'
@@ -145,10 +140,6 @@ parser.add_option("--rltdir", dest='rlt_dir', default=RLT_DIR,
 				of this run will be saved. At runtime, this directory will be created \
 				and the current date will be appended to its name.")
 
-# Options to use old code. Disregard if you are a user.
-parser.add_option("--loadfit", dest='loadfit', default=LOADFIT, type=int)
-parser.add_option("--loadfromyj", dest='loadfromyj', default=LOAD_FROM_YJ, type=int)
-parser.add_option("--yjfilepath", dest='yjfilepath', default=YJFILE)
 
 ### MODEL HYPERPARAMETERS AND GRAPH DEFINITION ###
 parser.add_option("--nlrecog", dest='NLRecog', default=1, type='int',
@@ -249,7 +240,6 @@ def build_hprms_dict(options):
 	d['rlt_dir'] = options.rlt_dir
 	
 	d['cluster_data_root'] = options.cluster_data_root
-	d['loadfit'] = options.loadfit
 	
 	### MODEL HYPERPARAMETERS AND GRAPH DEFINITION ###
 	d['xDim'] = options.xdim
@@ -440,9 +430,9 @@ def define_obs_pars_dict(d, MuY_layers_In=None):
 					num_leading_axes=2, name='MuY_OL')
 	
 	# Initialize layers weight if so desired.
-	if d.loadfit:
-		MuY_layers = lasagne.layers.get_all_layers(NNMuY)[1:]
-		init_layers(MuY_layers_In, MuY_layers)
+# 	if d.loadfit:
+# 		MuY_layers = lasagne.layers.get_all_layers(NNMuY)[1:]
+# 		init_layers(MuY_layers_In, MuY_layers)
 	
 	ObsParsDict = {'NNMuY' : NNMuY, 
 				   'NNMuY_W' : d.outWgenscale, 
@@ -475,10 +465,10 @@ def define_rec_pars_dict(d, MuX_layers_In=None, LX_layers_In=None):
 						num_leading_axes=2, name='MuX_HL' + str(i))
 	NNMuX = DenseLayer(NNMuX, d.xDim, nonlinearity=linear, W=Orthogonal(), 
 					num_leading_axes=2, name='MuX_OL')
-	if d.loadfit:
-		assert MuX_layers_In is not None, "List of layers not provided."
-		MuX_layers = lasagne.layers.get_all_layers(NNMuX)[1:]
-		init_layers(MuX_layers_In, MuX_layers)
+# 	if d.loadfit:
+# 		assert MuX_layers_In is not None, "List of layers not provided."
+# 		MuX_layers = lasagne.layers.get_all_layers(NNMuX)[1:]
+# 		init_layers(MuX_layers_In, MuX_layers)
 	
 	
 	LambdaX_dpth = d.lbdaxdepth
@@ -488,10 +478,10 @@ def define_rec_pars_dict(d, MuX_layers_In=None, LX_layers_In=None):
 							num_leading_axes=2, name='LX_HL' + str(i))
 	NNLambdaX = DenseLayer(NNLambdaX, d.xDim**2, nonlinearity=linear, W=Orthogonal(), 
 						num_leading_axes=2, name='LX_OL')
-	if options.loadfit:
-		assert LX_layers_In is not None, "List of layers not provided."
-		LX_layers = lasagne.layers.get_all_layers(NNLambdaX)[1:]
-		init_layers(LX_layers_In, LX_layers)
+# 	if options.loadfit:
+# 		assert LX_layers_In is not None, "List of layers not provided."
+# 		LX_layers = lasagne.layers.get_all_layers(NNLambdaX)[1:]
+# 		init_layers(LX_layers_In, LX_layers)
 	
 	RecParsDict = {'LATCLASS' : LocallyLinearEvolution, 
 				   'NNMuX' : NNMuX, 
@@ -589,87 +579,4 @@ if __name__ == "__main__":
 	main()
 
 
-# 
-# def pca(mat):
-#	 m_mean = np.mean(mat, axis=0)
-#	 m = mat - m_mean
-#	 m_cov = np.cov(m.T)
-#	 eig_vals, eig_vecs = npla.eig(m_cov)
-#	 eig_pairs = zip(np.abs(eig_vals), eig_vecs)
-#	 eig_pairs.sort(key=lambda x : x[0], reverse=True)
-#	 eig_vals, eig_vecs = zip(*eig_pairs)
-#	 return np.abs(eig_vals), eig_vecs
-# 
-# def normalize_layer(layer, data):
-#	 W = np.asarray(layer.W.get_value(), dtype=theano.config.floatX)
-#	 scaleW_lst, scaleb_lst = [], []
-#	 for d in data:
-#		 scaleb_lst.append(-np.dot(d, W).mean(axis=0))
-#	 scaleb = np.mean(scaleb_lst, axis=0)
-#	 layer.b.set_value(scaleb + np.array([0.0, 0.0]))
-#	 return layer
-# 
-# 
-# 
-# 
-# 
-# print '\nEigenvalues of the data covariance in descending order:'
-# print type(y_train)
-# y0_data = y_train[:, 0, :]
-# y0_eigvals, y0_eigvecs = pca(y0_data)
-# for i in y0_eigvals[:5]:
-#	 print i
-# Winit1 =  y0_eigvecs[:nnodesRec] if options.NLRecog else y0_eigvecs[:2]
-# Winit1 = 0.03*np.real(Winit1).T
-# 
-# # Tentative code to carry PCA for the nonlinear case. DO NOT USE FOR NOWs 
-# # mysigmoid = lambda x : 1.0/(1.0 + np.exp(-x))
-# # actH1 = mysigmoid(np.dot(y0_data, Winit1))
-# # actH1_eigpairs = pca(actH1)
-# # Winit2 = np.array([eig_pair[1] for eig_pair in actH1_eigpairs[:xDim]])  # brain shutdown!! I'm sure there's an easy slice to do this!
-# # Winit2 = np.real(Winit2).T
-# 
-# def ssigmoid(x):
-#	 return np.tanh(0.5*x)
-# 
-# 
-# 
-# 
-# print 'Ydata mean:', y_data.mean()
-# print 'Inferred X mean', np.mean([superv.eval_MuX(y) for y in y_data]) 
-# 
-# if not options.realdata:
-#	 cost = superv.eval_cost_LogDensity(y_data[0][:2], x_data[0][:2])/y_data.shape[1]
-#	 cx = superv.eval_cost_LogDensity_Xterms(x_data[0][:2])/y_data.shape[1]
-#	 cy = superv.eval_cost_LogDensity_Yterms(y_data[0][:2], x_data[0][:2])/y_data.shape[1]
-#	 c1 = gen_model.eval_LogDensity(y_data[0][:2], x_data[0][:2])[0]/y_data.shape[1]
-#	 yp = superv.eval_Ypred(x_data[0][:2])/y_data.shape[1]
-# #	 print 'y_data[0]', y_data[0][:2]
-# #	 print 'y_pred[0]', yp
-# #	 print 'x_data[0]', x_data[0][:2]
-#	 print 'Cost:', cost, c1, cx, cy
-# 
-#  
 
-#============================================#
-# 
-# def load_yuanjun_fits():
-# 	
-# 	if options.loadfit and options.loadfromyj:
-# 		yjfilepath = options.yjfilepath
-# 		yj_file = open(yjfilepath, 'rb+')
-# 		sgvb_yj = pickle.load(yj_file)
-# 		
-# 		Alinear = sgvb_yj.mrec.A.eval()
-# 		QInvChol = sgvb_yj.mrec.QinvChol.eval()
-# 		Q0InvChol = sgvb_yj.mrec.Q0invChol.eval()
-# 		x0 = sgvb_yj.mrec.x0.eval()
-# 		RChol = sgvb_yj.mprior.RChol.eval()
-# 		
-# 		MuY_layers_YJ = lasagne.layers.get_all_layers(sgvb_yj.mprior.NN_XtoY)[1:]
-# 		
-# 		MuX_layers_YJ = lasagne.layers.get_all_layers(sgvb_yj.mrec.NN_Mu)[1:]
-# 		LX_layers_YJ = lasagne.layers.get_all_layers(sgvb_yj.mrec.NN_Lambda)[1:]
-	
-
-#============================================#
